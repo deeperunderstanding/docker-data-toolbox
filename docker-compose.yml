@@ -1,0 +1,31 @@
+version: '3'
+services:
+  #--- Jupyter Notebook ---
+  notebook:
+    build:
+      context: .
+      dockerfile: ./jupyter-notebook-docker/Dockerfile
+    ports:
+      - "8888:8888"
+    depends_on: 
+      - mlflow
+    environment: 
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+  #--- ML Flow Server ---
+  mlflow:
+    build:
+      context: .
+      dockerfile: ./ml-flow-docker/Dockerfile
+    expose: 
+      - "5000"
+    ports:
+      - "5000:5000"
+    depends_on: 
+      - postgres
+  #--- Postgres DB ---
+  postgres:
+    image: postgres:alpine
+    expose:
+      - "5432"
+    # ports: 
+    #   - "5433:5432"
