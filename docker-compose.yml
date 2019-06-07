@@ -11,11 +11,12 @@ services:
       - mlflow
     environment: 
       - MLFLOW_TRACKING_URI=http://mlflow:5000
+    # volumes: 
+    #   - //c/:/home/jovyan
   #--- ML Flow Server ---
   mlflow:
     build:
-      context: .
-      dockerfile: ./ml-flow-docker/Dockerfile
+      context: ./ml-flow-docker
     expose: 
       - "5000"
     ports:
@@ -24,8 +25,11 @@ services:
       - postgres
   #--- Postgres DB ---
   postgres:
-    image: postgres:alpine
-    expose:
-      - "5432"
-    # ports: 
-    #   - "5433:5432"
+    #image: postgres:alpine
+    build:
+      context: ./postgres-docker
+    restart: always
+    environment:
+        POSTGRES_PASSWORD: 'admin'
+    ports: 
+      - "5433:5432"

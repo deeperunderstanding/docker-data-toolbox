@@ -8,10 +8,12 @@ FROM python:3.7.0
 
 RUN mkdir /mlflow/
 
-RUN pip install mlflow==0.9.1
+RUN pip install mlflow==1.0.0
+RUN pip install psycopg2
 
 EXPOSE 5000
 
 CMD mlflow server \
-    --file-store /mlflow \
+    --backend-store-uri postgresql://postgres:admin@postgres:5433/mlflow \
+    --default-artifact-root /mlflow \
     --host 0.0.0.0
