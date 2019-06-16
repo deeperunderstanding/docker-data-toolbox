@@ -6,18 +6,23 @@
 # Distributed under the terms of the Modified BSD License.
 FROM jupyter/scipy-notebook
 
+#TODO just extend from the tf image instead
+
 USER $NB_USER
 
 RUN conda install --quiet --yes \
     'tensorflow=1.13*' \
-    'keras=2.2*'
+    'keras=2.2*' \
+    'mlflow=1.0.0'
 
 RUN conda install --quiet --yes pytorch-cpu torchvision-cpu -c pytorch
-RUN conda install mlflow
+
+RUN pip install influxdb
+
+RUN conda install --quiet --yes \
+    'arrow' \
+    'requests'
 
 RUN conda clean --all -f -y && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
-
-#SET ENV MLFLOW_TRACKING_URI 
-#how to configure as variable?

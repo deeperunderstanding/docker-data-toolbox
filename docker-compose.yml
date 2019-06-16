@@ -1,19 +1,22 @@
 version: '3'
 services:
+  #------------------------
   #--- Jupyter Notebook ---
+  #------------------------
   notebook:
     build:
-      context: .
-      dockerfile: ./jupyter-notebook-docker/Dockerfile
+      context: ./jupyter-notebook-docker
     ports:
       - "8888:8888"
     depends_on: 
       - mlflow
     environment: 
       - MLFLOW_TRACKING_URI=http://mlflow:5000
-    # volumes: 
-    #   - //c/:/home/jovyan
+    volumes: 
+      - file-store:/home/jovyan
+  #----------------------    
   #--- ML Flow Server ---
+  #----------------------
   mlflow:
     build:
       context: ./ml-flow-docker
@@ -23,7 +26,11 @@ services:
       - "5000:5000"
     depends_on: 
       - postgres
+    volumes: 
+      - file-store:/mlflow
+  #-------------------
   #--- Postgres DB ---
+  #-------------------
   postgres:
     build:
       context: ./postgres-docker
@@ -32,3 +39,20 @@ services:
         POSTGRES_PASSWORD: 'admin'
     ports: 
       - "5433:5432"
+    volumes:
+      - ./postgres-store:/var/lib/postgresql/data
+  #-----------------
+  #--- Influx DB ---
+  #-----------------
+  influx:
+    image: influxdb:alpine
+    ports: 
+      - "8086:8086"
+    environment: 
+      - INFLUXDB_ADMIN_USER=admin
+      - INFLUXDB_ADMIN_PASSWORD=secret
+
+volumes:
+  postgres-store:
+  influx-store:
+  file-store:
