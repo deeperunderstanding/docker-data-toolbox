@@ -14,7 +14,7 @@ services:
       - MLFLOW_TRACKING_URI=http://mlflow:5000
     volumes: 
       - file-store:/home/jovyan
-  #----------------------    
+  #----------------------
   #--- ML Flow Server ---
   #----------------------
   mlflow:
@@ -26,8 +26,8 @@ services:
       - "5000:5000"
     depends_on: 
       - postgres
-    volumes: 
-      - file-store:/mlflow
+    environment:
+      - ARTIFACT_AWS_BUCKET=mlflow-demo
   #-------------------
   #--- Postgres DB ---
   #-------------------
