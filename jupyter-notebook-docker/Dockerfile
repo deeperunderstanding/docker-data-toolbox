@@ -13,11 +13,11 @@ USER $NB_USER
 RUN conda install --quiet --yes \
     'tensorflow=1.13*' \
     'keras=2.2*' \
-    'mlflow=1.0.0'
+    'mlflow'
 
 RUN conda install --quiet --yes pytorch-cpu torchvision-cpu -c pytorch
 
-RUN pip install influxdb
+RUN pip install influxdb boto3
 
 RUN conda install --quiet --yes \
     'arrow' \
